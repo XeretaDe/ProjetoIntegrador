@@ -1,0 +1,53 @@
+﻿@model ProjetoIntegrador.Models.Reviews
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Reviews</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TitleReview" class="control-label"></label>
+                <input asp-for="TitleReview" class="form-control" />
+                <span asp-validation-for="TitleReview" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DescriptionReview" class="control-label"></label>
+                <input asp-for="DescriptionReview" class="form-control" />
+                <span asp-validation-for="DescriptionReview" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContentReview" class="control-label"></label>
+                <input asp-for="ContentReview" class="form-control" />
+                <span asp-validation-for="ContentReview" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Grade" class="control-label"></label>
+                <input asp-for="Grade" class="form-control" />
+                <span asp-validation-for="Grade" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageReview" class="control-label"></label>
+                <input asp-for="ImageReview" class="form-control" />
+                <span asp-validation-for="ImageReview" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
