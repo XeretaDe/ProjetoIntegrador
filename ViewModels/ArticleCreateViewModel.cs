@@ -18,6 +18,8 @@ namespace ProjetoIntegrador.ViewModels
         public IFormFile Photo { get; set; }
         public string FKUser { get; set; }
 
-        public string Username {get; set;}
+        public string Username { get; set; }
+
+        public int Id { get; set; }
     }
 }

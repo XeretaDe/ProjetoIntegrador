@@ -18,6 +18,9 @@ namespace ProjetoIntegrador.Models
         //[DataType(DataType.Upload)]
         public string Imagem { get; set; }
 
+        [NotMapped]
+        public IFormFile Photo { get; set; }
+
         [Required]
         [ForeignKey("aspnetusers")]
         public string FKuser { get; set; }
