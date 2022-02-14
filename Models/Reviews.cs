@@ -9,18 +9,20 @@ namespace ProjetoIntegrador.Models
         public int Id { get; set; }
         [Required]
         [StringLength(100)]
-        public string TitleReview { get; set; }
+        public string Title { get; set; }
         [Required]
-        public string DescriptionReview { get; set; }
+        public string Description { get; set; }
         [Required]
+        [Column("Conteudo")]
         public string ContentReview { get; set; }
 
         [Required]
+        [Column("Score")]
         public int Grade { get; set; }
         [Required]
         //[DataType(DataType.Upload)]
+        [Column("Image")]
         public string Imagem { get; set; }
-
 
         [Required]
         [NotMapped]
@@ -28,6 +30,7 @@ namespace ProjetoIntegrador.Models
 
         [Required]
         [ForeignKey("aspnetusers")]
+        [Column("User")]
         public string IdAutor { get; set; }
 
         [NotMapped]

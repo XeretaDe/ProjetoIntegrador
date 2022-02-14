@@ -93,6 +93,10 @@ namespace ProjetoIntegrador.Controllers
             ModelState.Remove("Imagem");
             ModelState.Remove("Title");
             ModelState.Remove("Id");
+            ModelState.Remove("Username");
+            ModelState.Remove("IdAutor");
+
+
 
 
 
@@ -121,11 +125,11 @@ namespace ProjetoIntegrador.Controllers
                         reviews.Photo.CopyTo(new FileStream(file, FileMode.Create));
                     }
                     Review.Username = reviews.Username;
-                    Review.DescriptionReview = reviews.DescriptionReview;
+                    Review.Description = reviews.DescriptionReview;
                     Review.IdAutor = reviews.FKUser;
                     Review.ContentReview = reviews.ContentReview;
                     Review.Imagem = uniqueFileName;
-                    Review.TitleReview = reviews.TitleReview;
+                    Review.Title = reviews.TitleReview;
                     Review.Photo = reviews.Photo;
 
                     await _context.Reviews.AddAsync(Review);
@@ -152,9 +156,9 @@ namespace ProjetoIntegrador.Controllers
             if (signInManager.IsSignedIn(User))
             {
                 ReviewCreateViewModel model = new ReviewCreateViewModel();
-                model.DescriptionReview = reviews.DescriptionReview;
+                model.DescriptionReview = reviews.Description;
                 model.Username = reviews.Username;
-                model.TitleReview = reviews.TitleReview;
+                model.TitleReview = reviews.Title;
                 model.Photo = reviews.Photo;
                 model.ContentReview = reviews.ContentReview;
                 return View(model);
@@ -184,6 +188,7 @@ namespace ProjetoIntegrador.Controllers
             ModelState.Remove("Imagem");
             ModelState.Remove("Title");
             ModelState.Remove("Id");
+            ModelState.Remove("IdAutor");
 
             if (ModelState.IsValid)
             {
@@ -211,11 +216,12 @@ namespace ProjetoIntegrador.Controllers
                             reviews.Photo.CopyTo(new FileStream(file, FileMode.Create));
                         }
                         Review.Username = reviews.Username;
-                        Review.DescriptionReview = reviews.DescriptionReview;
+                        Review.Description = reviews.DescriptionReview;
                         Review.IdAutor = reviews.FKUser;
+                        Review.Grade = reviews.Grade;
                         Review.ContentReview = reviews.ContentReview;
                         Review.Imagem = uniqueFileName;
-                        Review.TitleReview = reviews.TitleReview;
+                        Review.Title = reviews.TitleReview;
 
                         _context.Reviews.Update(Review);
                         await _context.SaveChangesAsync();
