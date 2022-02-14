@@ -24,7 +24,6 @@ namespace ProjetoIntegrador.Models
         [Column("Image")]
         public string Imagem { get; set; }
 
-
         [Required]
         [NotMapped]
         public IFormFile Photo { get; set; }

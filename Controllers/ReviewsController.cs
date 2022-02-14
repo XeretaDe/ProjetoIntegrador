@@ -93,6 +93,10 @@ namespace ProjetoIntegrador.Controllers
             ModelState.Remove("Imagem");
             ModelState.Remove("Title");
             ModelState.Remove("Id");
+            ModelState.Remove("Username");
+            ModelState.Remove("IdAutor");
+
+
 
 
 
@@ -184,6 +188,7 @@ namespace ProjetoIntegrador.Controllers
             ModelState.Remove("Imagem");
             ModelState.Remove("Title");
             ModelState.Remove("Id");
+            ModelState.Remove("IdAutor");
 
             if (ModelState.IsValid)
             {
@@ -213,6 +218,7 @@ namespace ProjetoIntegrador.Controllers
                         Review.Username = reviews.Username;
                         Review.Description = reviews.DescriptionReview;
                         Review.IdAutor = reviews.FKUser;
+                        Review.Grade = reviews.Grade;
                         Review.ContentReview = reviews.ContentReview;
                         Review.Imagem = uniqueFileName;
                         Review.Title = reviews.TitleReview;
