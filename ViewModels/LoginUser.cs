@@ -12,7 +12,7 @@ namespace ProjetoIntegrador.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Lembre de mim")]
+        [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
     }
 }
