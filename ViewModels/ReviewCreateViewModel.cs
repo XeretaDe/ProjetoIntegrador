@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProjetoIntegrador.Models
+namespace ProjetoIntegrador.ViewModels
 {
-    public class Reviews
+    public class ReviewCreateViewModel
     {
-        [Key]
-        public int Id { get; set; }
+
         [Required]
         [StringLength(100)]
         public string TitleReview { get; set; }
@@ -14,23 +13,13 @@ namespace ProjetoIntegrador.Models
         public string DescriptionReview { get; set; }
         [Required]
         public string ContentReview { get; set; }
-
-        [Required]
-        public int Grade { get; set; }
         [Required]
         //[DataType(DataType.Upload)]
-        public string Imagem { get; set; }
-
-
-        [Required]
-        [NotMapped]
         public IFormFile Photo { get; set; }
+        public string FKUser { get; set; }
 
-        [Required]
-        [ForeignKey("aspnetusers")]
-        public string IdAutor { get; set; }
-
-        [NotMapped]
         public string Username { get; set; }
+
+        public int Id { get; set; }
     }
 }

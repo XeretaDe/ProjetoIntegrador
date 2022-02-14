@@ -1,4 +1,4 @@
-﻿@model ProjetoIntegrador.Models.Articles
+﻿@model ProjetoIntegrador.ViewModels.ArticleCreateViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,28 +10,30 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="TitleArticle" class="control-label"></label>
+                <input asp-for="TitleArticle" class="form-control" />
+                <span asp-validation-for="TitleArticle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="DescriptionArticle" class="control-label"></label>
+                <input asp-for="DescriptionArticle" class="form-control" />
+                <span asp-validation-for="DescriptionArticle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Conteudo" class="control-label"></label>
-                <input asp-for="Conteudo" class="form-control" />
-                <span asp-validation-for="Conteudo" class="text-danger"></span>
+                <label asp-for="ContentArticle" class="control-label"></label>
+                <input asp-for="ContentArticle" class="form-control" />
+                <span asp-validation-for="ContentArticle" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Imagem" class="control-label"></label>
-                <input asp-for="Imagem" class="form-control" />
-                <span asp-validation-for="Imagem" class="text-danger"></span>
+                <label asp-for="Photo" class="control-label"></label>
+                <div class="col-sm-10">
+                    <input asp-for="Photo" class="form-control custom-file-input" />
+                    <label class="custom-file-label"></label>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -45,5 +47,16 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    $(document).ready(function (){
+        $('.custom-file-input').on("change", function()
+        {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).next('.custom-file-label').html(fileName);
+        })
+    });
+</script>
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

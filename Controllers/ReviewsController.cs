@@ -1,34 +1,48 @@
 ﻿#nullable disable
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjetoIntegrador.DataContext;
 using ProjetoIntegrador.Models;
+using ProjetoIntegrador.ViewModels;
 
 namespace ProjetoIntegrador.Controllers
 {
     public class ReviewsController : Controller
     {
         private readonly Data _context;
+        private readonly IWebHostEnvironment _environment;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
 
-        public ReviewsController(Data context)
+        public ReviewsController(Data context,
+                                  IWebHostEnvironment hostingEnvironment,
+                                  UserManager<IdentityUser> userManager,
+                                SignInManager<IdentityUser> signInManager)
         {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
             _context = context;
+            _environment = hostingEnvironment;
         }
 
-        // GET: Reviews
+        // GET: Articles
         public async Task<IActionResult> Index()
         {
             return View(await _context.Reviews.ToListAsync());
         }
 
-        // GET: Reviews/Details/5
+        // GET: Articles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -40,33 +54,89 @@ namespace ProjetoIntegrador.Controllers
             {
                 return NotFound();
             }
+            if (signInManager.IsSignedIn(User))
+            {
+                return View(reviews);
+            }
+            else
+            {
+                return RedirectToAction("Error", "Error");
+            }
 
-            return View(reviews);
+
         }
 
-        // GET: Reviews/Create
+        // GET: Articles/Create
         public IActionResult Create()
         {
-            return View();
+            if (signInManager.IsSignedIn(User))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Error", "Error");
+            }
         }
 
-        // POST: Reviews/Create
+        // POST: Articles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TitleReview,DescriptionReview,ContentReview,Grade,ImageReview")] Reviews reviews)
+        public async Task<IActionResult> Create(ReviewCreateViewModel reviews, Reviews Review)
         {
+            ModelState.Remove("FKUser");
+            ModelState.Remove("Username");
+            ModelState.Remove("Conteudo");
+            ModelState.Remove("Description");
+            ModelState.Remove("Imagem");
+            ModelState.Remove("Title");
+            ModelState.Remove("Id");
+
+
+
+
             if (ModelState.IsValid)
             {
-                _context.Add(reviews);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                using (DbCommand cmd = _context.Database.GetDbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Id, UserName, Email FROM aspnetusers WHERE UserName = '" + User.Identity.Name + "'";
+                    _context.Database.OpenConnection();
+                    using (DbDataReader ddr = cmd.ExecuteReader())
+                    {
+
+                        while (ddr.Read())
+                        {
+                            reviews.Username = ddr.GetString("Email");
+                            reviews.FKUser = ddr.GetString("Id");
+                        }
+                    }
+                    string uniqueFileName = null;
+                    if (reviews.Photo != null)
+                    {
+                        string uploadFolder = Path.Combine(_environment.WebRootPath, "images");
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + reviews.Photo.FileName;
+                        string file = Path.Combine(uploadFolder, uniqueFileName);
+                        reviews.Photo.CopyTo(new FileStream(file, FileMode.Create));
+                    }
+                    Review.Username = reviews.Username;
+                    Review.DescriptionReview = reviews.DescriptionReview;
+                    Review.IdAutor = reviews.FKUser;
+                    Review.ContentReview = reviews.ContentReview;
+                    Review.Imagem = uniqueFileName;
+                    Review.TitleReview = reviews.TitleReview;
+                    Review.Photo = reviews.Photo;
+
+                    await _context.Reviews.AddAsync(Review);
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToAction("index", "Home");
             }
             return View(reviews);
         }
 
-        // GET: Reviews/Edit/5
+        // GET: Articles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,31 +149,82 @@ namespace ProjetoIntegrador.Controllers
             {
                 return NotFound();
             }
-            return View(reviews);
+            if (signInManager.IsSignedIn(User))
+            {
+                ReviewCreateViewModel model = new ReviewCreateViewModel();
+                model.DescriptionReview = reviews.DescriptionReview;
+                model.Username = reviews.Username;
+                model.TitleReview = reviews.TitleReview;
+                model.Photo = reviews.Photo;
+                model.ContentReview = reviews.ContentReview;
+                return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Error", "Error");
+            }
         }
 
-        // POST: Reviews/Edit/5
+        // POST: Articles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TitleReview,DescriptionReview,ContentReview,Grade,ImageReview")] Reviews reviews)
+        public async Task<IActionResult> Edit(int id, Reviews Review, ReviewCreateViewModel reviews)
         {
-            if (id != reviews.Id)
+            if (id != Review.Id)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("FKUser");
+            ModelState.Remove("Username");
+            ModelState.Remove("Conteudo");
+            ModelState.Remove("Description");
+            ModelState.Remove("Imagem");
+            ModelState.Remove("Title");
+            ModelState.Remove("Id");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(reviews);
-                    await _context.SaveChangesAsync();
+                    using (DbCommand cmd = _context.Database.GetDbConnection().CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT Id, UserName, Email FROM aspnetusers WHERE UserName = '" + User.Identity.Name + "'";
+                        _context.Database.OpenConnection();
+                        using (DbDataReader ddr = cmd.ExecuteReader())
+                        {
+
+                            while (ddr.Read())
+                            {
+                                reviews.Username = ddr.GetString("Email");
+                                reviews.FKUser = ddr.GetString("Id");
+                            }
+                        }
+                        string uniqueFileName = null;
+                        if (reviews.Photo != null)
+                        {
+                            string uploadFolder = Path.Combine(_environment.WebRootPath, "images");
+                            uniqueFileName = Guid.NewGuid().ToString() + "_" + reviews.Photo.FileName;
+                            string file = Path.Combine(uploadFolder, uniqueFileName);
+                            reviews.Photo.CopyTo(new FileStream(file, FileMode.Create));
+                        }
+                        Review.Username = reviews.Username;
+                        Review.DescriptionReview = reviews.DescriptionReview;
+                        Review.IdAutor = reviews.FKUser;
+                        Review.ContentReview = reviews.ContentReview;
+                        Review.Imagem = uniqueFileName;
+                        Review.TitleReview = reviews.TitleReview;
+
+                        _context.Reviews.Update(Review);
+                        await _context.SaveChangesAsync();
+                    }
+                    return RedirectToAction("index", "Home");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReviewsExists(reviews.Id))
+                    if (!ArticlesExists(Review.Id))
                     {
                         return NotFound();
                     }
@@ -112,12 +233,11 @@ namespace ProjetoIntegrador.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(reviews);
         }
 
-        // GET: Reviews/Delete/5
+        // GET: Articles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -132,21 +252,35 @@ namespace ProjetoIntegrador.Controllers
                 return NotFound();
             }
 
-            return View(reviews);
+            if (signInManager.IsSignedIn(User))
+            {
+                return View(reviews);
+            }
+            else
+            {
+                return RedirectToAction("Error", "Error");
+            }
         }
 
-        // POST: Reviews/Delete/5
+        // POST: Articles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var reviews = await _context.Reviews.FindAsync(id);
             _context.Reviews.Remove(reviews);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (signInManager.IsSignedIn(User))
+            {
+                await _context.SaveChangesAsync();
+                return View(reviews);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        private bool ReviewsExists(int id)
+        private bool ArticlesExists(int id)
         {
             return _context.Reviews.Any(e => e.Id == id);
         }

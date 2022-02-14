@@ -37,7 +37,7 @@ namespace ProjetoIntegrador.Controllers
         // GET: Articles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Reviews.ToListAsync());
+            return View(await _context.Artigos.ToListAsync());
         }
 
         // GET: Articles/Details/5
@@ -93,6 +93,8 @@ namespace ProjetoIntegrador.Controllers
             ModelState.Remove("Description");
             ModelState.Remove("Imagem");
             ModelState.Remove("Title");
+            ModelState.Remove("Id");
+    
 
 
 
@@ -125,6 +127,7 @@ namespace ProjetoIntegrador.Controllers
                     Artigo.Conteudo = articles.ContentArticle;
                     Artigo.Imagem = uniqueFileName;
                     Artigo.Title = articles.TitleArticle;
+                    Artigo.Photo = articles.Photo;
 
                     await _context.Artigos.AddAsync(Artigo);
                     await _context.SaveChangesAsync();
@@ -149,7 +152,13 @@ namespace ProjetoIntegrador.Controllers
             }
             if (signInManager.IsSignedIn(User))
             {
-                return View(articles);
+                ArticleCreateViewModel model = new ArticleCreateViewModel();
+                model.DescriptionArticle = articles.Description;
+                model.Username = articles.Username;
+                model.TitleArticle = articles.Title;
+                model.Photo = articles.Photo;
+                model.ContentArticle = articles.Conteudo;
+                return View(model);
             }
             else
             {
@@ -162,23 +171,61 @@ namespace ProjetoIntegrador.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Articles articles)
+        public async Task<IActionResult> Edit(int id, Articles Artigo, ArticleCreateViewModel articles)
         {
-            if (id != articles.Id)
+            if (id != Artigo.Id)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("FKUser");
+            ModelState.Remove("Username");
+            ModelState.Remove("Conteudo");
+            ModelState.Remove("Description");
+            ModelState.Remove("Imagem");
+            ModelState.Remove("Title");
+            ModelState.Remove("Id");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(articles);
-                    await _context.SaveChangesAsync();
+                    using (DbCommand cmd = _context.Database.GetDbConnection().CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT Id, UserName, Email FROM aspnetusers WHERE UserName = '" + User.Identity.Name + "'";
+                        _context.Database.OpenConnection();
+                        using (DbDataReader ddr = cmd.ExecuteReader())
+                        {
+
+                            while (ddr.Read())
+                            {
+                                articles.Username = ddr.GetString("Email");
+                                articles.FKUser = ddr.GetString("Id");
+                            }
+                        }
+                        string uniqueFileName = null;
+                        if (articles.Photo != null)
+                        {
+                            string uploadFolder = Path.Combine(_environment.WebRootPath, "images");
+                            uniqueFileName = Guid.NewGuid().ToString() + "_" + articles.Photo.FileName;
+                            string file = Path.Combine(uploadFolder, uniqueFileName);
+                            articles.Photo.CopyTo(new FileStream(file, FileMode.Create));
+                        }
+                        Artigo.Username = articles.Username;
+                        Artigo.Description = articles.DescriptionArticle;
+                        Artigo.FKuser = articles.FKUser;
+                        Artigo.Conteudo = articles.ContentArticle;
+                        Artigo.Imagem = uniqueFileName;
+                        Artigo.Title = articles.TitleArticle;
+
+                        _context.Artigos.Update(Artigo);
+                        await _context.SaveChangesAsync();
+                    }
+                    return RedirectToAction("index", "Home");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ArticlesExists(articles.Id))
+                    if (!ArticlesExists(Artigo.Id))
                     {
                         return NotFound();
                     }
@@ -187,7 +234,6 @@ namespace ProjetoIntegrador.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(articles);
         }
