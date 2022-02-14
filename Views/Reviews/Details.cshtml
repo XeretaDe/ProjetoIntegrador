@@ -1,7 +1,9 @@
-﻿@model ProjetoIntegrador.Models.Reviews
+﻿@model Reviews
+@inject SignInManager<IdentityUser> signInManager;
 
 @{
     ViewData["Title"] = "Details";
+    var photoPath = "~/images/" + (Model.Imagem ?? "noimage.jpg");
 }
 
 <h1>Details</h1>
@@ -35,14 +37,18 @@
             @Html.DisplayFor(model => model.Grade)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageReview)
+            @Html.DisplayNameFor(model => model.Imagem)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageReview)
+            @Html.DisplayFor(model => model.Imagem)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+   @if (signInManager.IsSignedIn(User))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+
+    }
     <a asp-action="Index">Back to List</a>
 </div>

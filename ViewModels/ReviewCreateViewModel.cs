@@ -16,6 +16,9 @@ namespace ProjetoIntegrador.ViewModels
         [Required]
         //[DataType(DataType.Upload)]
         public IFormFile Photo { get; set; }
+
+        [Required]
+        public int Grade { get; set; }
         public string FKUser { get; set; }
 
         public string Username { get; set; }
