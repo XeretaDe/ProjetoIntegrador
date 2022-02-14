@@ -185,10 +185,6 @@ namespace ProjetoIntegrador.Controllers
             ModelState.Remove("Imagem");
             ModelState.Remove("Title");
             ModelState.Remove("Id");
-            ModelState.Remove("Photo");
-
-
-
 
             if (ModelState.IsValid)
             {
