@@ -1,5 +1,5 @@
 module.exports = {
-    content: ["**/*.cshtml", "**/*.html"],
+    content: ["**/*.cshtml", "**/*.html, **/*.razor"],
     theme: {
         screens: {
             xm: "400px",
@@ -28,6 +28,7 @@ module.exports = {
                 arimo: ["Arimo"],
                 Bree: ["Bree+Serif"],
                 inter: ["Inter"],
+                Syne: ['Syne Tactile']
             },
             colors: {
                 "dark-color": "#333446",

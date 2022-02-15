@@ -6,58 +6,52 @@
     ViewData["Title"] = "Index";
 }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Conteudo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Imagem)
-            </th>
+<div class="min-h-screen">
+    @if (signInManager.IsSignedIn(User))
+    {
+        <div class="bg-green-900 rounded-full p-2 w-28 mt-10 ml-6 hover:scale-110">
+            <a class="text-white font-inter font-bold" asp-action="Create">Create New</a>
+        </div>
+
+    }
+
+    @foreach (var item in Model)
+    {
+        var photoPath = "~/images/" + (item.Imagem ?? "noimage.jpg");
+
+        <div class="mb-14">
+            <div class="flex m-6">
+                <div class="relative w-full sm:max-w-lg md:max-w-xl">
+                    <img class="rounded-md xl:rounded-xl object-cover" src="@photoPath" asp-append-version="true">
+                </div>
+                <div class="flex flex-col m-2">
+                    <div>
+                        <h1 class="font-inter text-xl font-medium min-h-full">
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </h1>
+                    </div>
+                    <div class="font-inter max-w-md">
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </div>
+                </div>
+
+            </div>
+
+
             @if (signInManager.IsSignedIn(User))
             {
-                <th></th>
+                <div class="ml-6 flex gap-4">
+                    <div class="bg-slate-900 w-20 justify-center p-1 flex  rounded-full ">
+                        <a class="font-inter text-white font-medium" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    </div>
+                    <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full "><a
+                    class="font-inter  font-medium text-white" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </div>
+                    <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full ">
+                        <a class="font-inter text-white font-medium" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </div>
+                </div>
             }
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            var photoPath = "~/images/" + (item.Imagem ?? "noimage.jpg");
-
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Conteudo)
-                </td>
-                <td>
-                    <img class="card-img-top" src="@photoPath" asp-append-version="true">
-                </td>
-                @if (signInManager.IsSignedIn(User))
-                {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                }
-            </tr>
-        }
-    </tbody>
-</table>
+        </div>
+    }
+</div>

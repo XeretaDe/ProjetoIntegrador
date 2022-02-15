@@ -6,37 +6,30 @@
     var photoPath = "~/images/" + (Model.Imagem ?? "noimage.jpg");
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Articles</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
+<div class="min-h-screen relative">
+    <div class="mt-6 flex flex-col place-items-center">
+        <h1 class="text-2xl font-bold font-inter lg:text-3xl">
             @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
+        </h1>
+        <div class="font-inter max-w-md text-md p-2 text-center lg:text-base lg:max-w-lg xl:max-w-4xl">
             @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Conteudo)
-        </dt>
-        <dd class="col-sm-10">
+        </div>
+    </div>
+    <div class="flex place-content-center mt-3">
+        <img class="relative w-full object-cover h-40 sm:h-60 md:max-w-xl lg:max-w-2xl lg:h-80 mb-4" src="@photoPath"
+            asp-append-version="true">
+    </div>
+    <div class="font-inter lg:max-w-2xl lg:mr-auto lg:ml-auto ">
+        <div class="font-inter lg:max-w-2xl relative text-justify">
             @Html.DisplayFor(model => model.Conteudo)
-        </dd>
-        <dt class="col-sm-2">
-            <img class="card-img-top" src="@photoPath" asp-append-version="true">
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Imagem)
-        </dd>
-    </dl>
+        </div>
+    </div>
+
+
+
+
+
 </div>
 <div>
     @if (signInManager.IsSignedIn(User))
@@ -44,5 +37,4 @@
         <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
 
     }
-    <a asp-action="Index">Back to List</a>
 </div>
