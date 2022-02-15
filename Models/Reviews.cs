@@ -35,5 +35,8 @@ namespace ProjetoIntegrador.Models
 
         [NotMapped]
         public string Username { get; set; }
+
+        [NotMapped]
+        public List<Reviews> ListReviews { get; set; }
     }
 }

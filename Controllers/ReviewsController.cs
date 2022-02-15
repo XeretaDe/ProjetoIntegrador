@@ -54,14 +54,9 @@ namespace ProjetoIntegrador.Controllers
             {
                 return NotFound();
             }
-            if (signInManager.IsSignedIn(User))
-            {
-                return View(reviews);
-            }
-            else
-            {
-                return RedirectToAction("Error", "Error");
-            }
+
+            return View(reviews);
+
 
 
         }

@@ -28,6 +28,8 @@ namespace ProjetoIntegrador.Models
         [NotMapped]
         public string Username { get; set; }
 
+        [NotMapped]
+        public List<Articles> ListArticles { get; set; }
 
     }
 }
