@@ -8,41 +8,36 @@
 <h1>Edit</h1>
 
 <h4>Reviews</h4>
-<hr />
-<div class="row">
+
+<div class="min-h-screen">
     <div class="col-md-4">
-        <form enctype="multipart/form-data"  asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="TitleReview" class="control-label"></label>
-                <input asp-for="TitleReview" class="form-control" />
+            <div class="form-group flex flex-col ">
+                <label asp-for="TitleReview" class="control-label font-inter text-lg font-medium"></label>
+                <input asp-for="TitleReview" class="bg-red-200 rounded-md p-2 w-60" />
                 <span asp-validation-for="TitleReview" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DescriptionReview" class="control-label"></label>
-                <input asp-for="DescriptionReview" class="form-control" />
+            <div class="form-group flex flex-col">
+                <label asp-for="DescriptionReview" class="control-label control-label font-inter text-lg font-medium"></label>
+                <input asp-for="DescriptionReview" class="form-control bg-red-200 rounded-md p-2 w-60" />
                 <span asp-validation-for="DescriptionReview" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ContentReview" class="control-label"></label>
-                <input asp-for="ContentReview" class="form-control" />
+            <div class="form-group flex flex-col">
+                <label asp-for="ContentReview" class="control-labe font-inter text-lg font-medium"></label>
+                <input asp-for="ContentReview" class="form-control bg-red-200 rounded-md p-2 w-60" />
                 <span asp-validation-for="ContentReview" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Grade" class="control-label"></label>
-                <input asp-for="Grade" class="form-control" />
-                <span asp-validation-for="Grade" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Photo" class="control-label"></label>
+            <div class="form-group flex flex-col">
+                <label asp-for="Photo" class="control-label font-inter text-lg font-medium "></label>
                 <div class="col-sm-10">
-                    <input asp-for="Photo" class="form-control custom-file-input" />
-                    <label class="custom-file-label"></label>
+                    <input asp-for="Photo" class="form-control custom-file-input " />
+                    <label asp-for="Photo" class="file-input__label"><span>Upload file</span></label>
                 </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="form-group w-20 bg-green-300 flex justify-center rounded-full hover:scale-110 delay-75 hover:cursor-pointer mt-10">
+                <input type="submit" value="Save" class="font-Inter hover:cursor-pointer" />
             </div>
         </form>
     </div>
