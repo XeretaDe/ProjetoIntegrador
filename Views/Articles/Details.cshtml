@@ -12,13 +12,15 @@
         <h1 class="text-2xl font-bold font-inter lg:text-3xl">
             @Html.DisplayFor(model => model.Title)
         </h1>
-        <div class="font-inter max-w-md text-md p-2 text-center lg:text-base lg:max-w-lg xl:max-w-4xl">
+        <div class="max-w-md text-md p-2 text-center lg:text-lg lg:max-w-lg xl:max-w-4xl">
             @Html.DisplayFor(model => model.Description)
         </div>
     </div>
-    <div class="flex place-content-center mt-3">
+    <div class="flex place-content-center">
+
         <img class="relative w-full object-cover h-40 sm:h-60 md:max-w-xl lg:max-w-2xl lg:h-80 mb-4" src="@photoPath"
             asp-append-version="true">
+
     </div>
     <div class="font-inter lg:max-w-2xl lg:mr-auto lg:ml-auto ">
         <div class="font-inter lg:max-w-2xl relative text-justify">
