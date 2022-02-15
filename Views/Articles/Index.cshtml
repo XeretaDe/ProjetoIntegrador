@@ -9,7 +9,9 @@
 <div class="min-h-screen">
     @if (signInManager.IsSignedIn(User))
     {
-        <a asp-action="Create">Create New</a>
+        <div class="bg-green-900 rounded-full p-2 w-28 mt-10 ml-6 hover:scale-110">
+            <a class="text-white font-inter font-bold" asp-action="Create">Create New</a>
+        </div>
 
     }
 
@@ -17,7 +19,7 @@
     {
         var photoPath = "~/images/" + (item.Imagem ?? "noimage.jpg");
 
-        <div class="">
+        <div class="mb-14">
             <div class="flex m-6">
                 <div class="relative w-full sm:max-w-lg md:max-w-xl">
                     <img class="rounded-md xl:rounded-xl object-cover" src="@photoPath" asp-append-version="true">
@@ -42,8 +44,9 @@
                     <div class="bg-slate-900 w-20 justify-center p-1 flex  rounded-full ">
                         <a class="font-inter text-white font-medium" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                     </div>
-                    <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full "><a class="font-inter  font-medium text-white" asp-action="Details"
-                    asp-route-id="@item.Id">Details</a></div>
+                    <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full "><a
+                    class="font-inter  font-medium text-white" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    </div>
                     <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full ">
                         <a class="font-inter text-white font-medium" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     </div>
