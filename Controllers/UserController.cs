@@ -36,6 +36,7 @@ namespace ProjetoIntegrador.Controllers
         }
 
         // POST: HomeController/Create
+        [Route("Register")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RegisterUser Usuario)
