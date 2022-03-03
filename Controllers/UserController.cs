@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProjetoIntegrador.DataContext;
+using ProjetoIntegrador.Models;
 using ProjetoIntegrador.ViewModels;
+using System.Data;
+using System.Data.Common;
+using System.Threading.Tasks;
 
 namespace ProjetoIntegrador.Controllers
 {
@@ -41,23 +46,29 @@ namespace ProjetoIntegrador.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RegisterUser Usuario)
         {
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                //var user = new User { Login = Usuario.Login, NomeUsuario = Usuario.Nome, Password = Usuario.Password };
+
+                //using (DbCommand cmd = _contexto.Database.GetDbConnection().CreateCommand())
+                //{
+                //    _contexto.Database.OpenConnection();
+                //    await _contexto.Users.AddAsync(user);
+                //    await _contexto.SaveChangesAsync();
+                //}
+
+                var usuario = new IdentityUser { UserName = Usuario.Login, Email = Usuario.Nome };
+                var result = await userManager.CreateAsync(usuario, Usuario.Password);
+                if (result.Succeeded)
                 {
-                    var user = new IdentityUser { UserName = Usuario.Login, Email = Usuario.Nome };
-                    var result = await userManager.CreateAsync(user, Usuario.Password);
-
-
-                    if (result.Succeeded)
-                    {
-                        await signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("index", "Home");
-                    }
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
+                    await signInManager.SignInAsync(usuario, isPersistent: false);
+                    return RedirectToAction("index", "Home");
                 }
-
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
             return View(User);
         }
 
@@ -72,8 +83,29 @@ namespace ProjetoIntegrador.Controllers
         {
             if (ModelState.IsValid)
             {
+                //using (DbCommand cmd = _contexto.Database.GetDbConnection().CreateCommand())
+                //{
+                //    cmd.CommandText = "SELECT * FROM users WHERE UserName = '" + model.Login + "'";
+                //    _contexto.Database.OpenConnection();
+                //    using (DbDataReader ddr = cmd.ExecuteReader())
+                //    {
+                //        while (ddr.Read())
+                //        {
+                //            if (model.Password == ddr.GetString("Password"))
+                //            {
+                //                User user = new User();
+                //                user.Logado = true;
+                //                user.Login = ddr.GetString("Login");
+                //                user.NomeUsuario = ddr.GetString("NomeUsuario");
+                //                user.Password = ddr.GetString("Password");
+                //                user.IdUser = ddr.GetInt32("IdUser");
+                //            }
+
+                //        }
+                //    }
+                //}
                 var result = await signInManager.PasswordSignInAsync(
-                    model.Login, model.Password, model.RememberMe, false);
+                                   model.Login, model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)
                 {
@@ -92,5 +124,10 @@ namespace ProjetoIntegrador.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("index", "Home");
         }
+        //public IActionResult Logout(User usuario)
+        //{
+        //    usuario.Logado = false;
+        //    return RedirectToAction("index", "Home");
+        //}
     }
 }

@@ -48,6 +48,8 @@ namespace ProjetoIntegrador.DataContext
 
         public DbSet<Articles> Artigos { get; set; }
         public DbSet<Reviews> Reviews { get; set; }
+        public DbSet<User> Users { get; set; }
+
         public DbSet<ProjetoIntegrador.ViewModels.RegisterUser> RegisterUser { get; set; }
 
     }

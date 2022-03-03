@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
 
 namespace ProjetoIntegrador.Controllers
 {

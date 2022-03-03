@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 15-Fev-2022 às 02:24
+-- Tempo de geração: 03-Mar-2022 às 04:31
 -- Versão do servidor: 10.4.22-MariaDB
--- versão do PHP: 8.1.2
+-- versão do PHP: 8.1.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `artigos` (
   `Id` int(255) NOT NULL,
   `Title` varchar(60) NOT NULL,
-  `Description` varchar(752) NOT NULL,
+  `Description` varchar(60) NOT NULL,
   `Conteudo` longtext NOT NULL,
   `Imagem` varchar(255) NOT NULL,
   `FKuser` varchar(85) NOT NULL
@@ -41,7 +41,7 @@ CREATE TABLE `artigos` (
 --
 
 INSERT INTO `artigos` (`Id`, `Title`, `Description`, `Conteudo`, `Imagem`, `FKuser`) VALUES
-(14, 'Fusce luctus eleifend nibh at lacinia.', 'Donec a finibus nibh, posuere interdum arcu. Morbi ut purus et lacus vehicula tempus vel sit amet urna. ', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis hendrerit dolor. Donec sit amet feugiat lectus. Donec sollicitudin ante at augue maximus, eget consequat ante sollicitudin. Etiam lacus odio, interdum nec massa in, scelerisque molestie libero. Duis felis nulla, vehicula ut augue sit amet, bibendum placerat metus. Praesent magna arcu, bibendum fermentum lobortis ut, fermentum sit amet sapien. Aliquam blandit sit amet eros sit amet volutpat. Vestibulum quis risus leo. Fusce ac sapien in augue mollis viverra eu sit amet felis. Ut aliquet diam at magna fringilla, eget condimentum arcu pulvinar. Duis venenatis vestibulum massa, in ornare ipsum. Duis lectus enim, dignissim ac diam ac, tincidunt ultricies metus. Nam ornare ut diam in aliquet. Aliquam gravida nisl in venenatis facilisis. Etiam ultrices tempor arcu a efficitur. In tristique erat non nibh egestas, auctor cursus ligula posuere.  Fusce at nisl vitae ex bibendum sodales quis nec erat. Pellentesque cursus rhoncus mauris sed gravida. Sed rutrum ex quis congue pretium. Phasellus lacinia, nisi quis volutpat fermentum, nibh turpis pellentesque tortor, quis tristique urna tortor eu leo. Donec bibendum ullamcorper luctus. Morbi rutrum placerat elit, eget mollis risus venenatis vitae. Ut aliquet euismod aliquam. Quisque facilisis fermentum lacus at luctus. Fusce ac magna consectetur, pharetra felis quis, consectetur justo.  Fusce luctus eleifend nibh at lacinia. Donec et faucibus ipsum. Aliquam auctor dolor mollis, dignissim ligula vitae, euismod augue. Nulla urna arcu, feugiat a consequat id, mollis a tortor. Curabitur in ante tincidunt, porttitor lectus quis, tempor ex. Phasellus imperdiet iaculis eros. In ut tellus tellus. Nam hendrerit mattis est, non vehicula risus sollicitudin non. Pellentesque enim tortor, tristique quis lorem quis, volutpat vulputate dui. Maecenas condimentum quam ligula, at luctus augue accumsan vel.  Donec a finibus nibh, posuere interdum arcu. Morbi ut purus et lacus vehicula tempus vel sit amet urna. Proin ac sollicitudin leo. Aliquam facilisis consequat ex, at aliquet ante finibus sit amet. In a risus nisl. Suspendisse potenti. Donec semper risus nibh, et bibendum tortor lacinia sed. Suspendisse quis felis nisl. Maecenas sit amet nisi elit. Sed porttitor egestas lectus sit amet scelerisque.  Cras malesuada, turpis vitae congue vulputate, turpis libero cursus turpis, eu porttitor sem lectus a lacus. Nunc quam velit, ultricies nec tortor quis, malesuada sagittis velit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer dapibus, lectus at sagittis semper, dui metus ullamcorper risus, a molestie purus magna sed ipsum. Integer ut interdum mi, ac faucibus est. Vivamus fringilla dui quis massa pretium, ut hendrerit mi dignissim. Mauris rutrum at arcu at imperdiet. Morbi accumsan, nunc a molestie volutpat, lorem erat aliquet augue, vel mattis justo dolor et massa.', '3a95003c-b243-4693-9bd4-d61e76959c67_tumblr_pcwxn5zV2q1xcnpsto1_1280.png', '367aa2e7-7ed4-4384-9ece-4ab4451ac675');
+(13, 'AAAAAAAAAAA', 'AAAAAAAAAA', 'AAAAAAAAAAAA', 'c9cc6098-f157-4478-ad15-4ebc8c0fbc89_Screenshot_75.png', '367aa2e7-7ed4-4384-9ece-4ab4451ac675');
 
 -- --------------------------------------------------------
 
@@ -171,7 +171,7 @@ CREATE TABLE `reviews` (
 --
 
 INSERT INTO `reviews` (`Id`, `Title`, `Description`, `Conteudo`, `Image`, `Score`, `User`) VALUES
-(0, 'aaaa', 'aaaa', 'aaaaa', '07ecb325-ce64-427a-89f7-9f2f1829ccc1_tumblr_pcwxn5zV2q1xcnpsto1_1280.png', 10, '367aa2e7-7ed4-4384-9ece-4ab4451ac675');
+(1, 'aaaaaaaa', 'aaaaaaaaaaaaa', 'aaaaaaaaaaaaaa', 'd5023b8a-d985-4c9c-9acc-b63bc906dbdd_Screenshot_85.png', 0, '367aa2e7-7ed4-4384-9ece-4ab4451ac675');
 
 -- --------------------------------------------------------
 
@@ -274,7 +274,7 @@ ALTER TABLE `__efmigrationshistory`
 -- AUTO_INCREMENT de tabela `artigos`
 --
 ALTER TABLE `artigos`
-  MODIFY `Id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `Id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `aspnetroleclaims`
@@ -296,7 +296,7 @@ ALTER TABLE `aspnetuserclaims`
 -- Limitadores para a tabela `artigos`
 --
 ALTER TABLE `artigos`
-  ADD CONSTRAINT `FKuser` FOREIGN KEY (`FKuser`) REFERENCES `aspnetusers` (`Id`);
+  ADD CONSTRAINT `artigos_ibfk_1` FOREIGN KEY (`FKuser`) REFERENCES `aspnetusers` (`Id`);
 
 --
 -- Limitadores para a tabela `aspnetroleclaims`
