@@ -1,9 +1,9 @@
 ﻿@model Reviews
-@inject SignInManager<IdentityUser> signInManager;
 
 @{
     ViewData["Title"] = "Details";
     var photoPath = "~/images/" + (Model.Imagem ?? "noimage.jpg");
+
 }
 <div class="min-h-screen relative">
     <div class="mt-6 flex flex-col place-items-center">
@@ -16,7 +16,7 @@
     </div>
     <div class="flex place-content-center mt-3">
         <img class="relative w-full object-cover h-40 sm:h-60 md:max-w-xl lg:max-w-2xl lg:h-80 mb-4" src="@photoPath"
-            asp-append-version="true">
+             asp-append-version="true">
     </div>
     <div class="font-inter lg:max-w-2xl lg:mr-auto lg:ml-auto ">
         <div class="font-inter lg:max-w-2xl relative text-justify">
@@ -32,10 +32,12 @@
 
 
 <div>
-    @if (signInManager.IsSignedIn(User))
-    {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-
+    @{User Usuario = new Models.User();
+        if (Usuario.UserLogado.Last().Logado)
+        {
+            <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        }
     }
+
     <a asp-action="Index">Back to List</a>
 </div>

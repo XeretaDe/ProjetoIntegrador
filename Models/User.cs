@@ -10,7 +10,7 @@ namespace ProjetoIntegrador.Models
     public class User
     {
         [Key]
-        public int IdUser { get; set; }
+        public string IdUser { get; set; }
         [Required]
         public string Password { get; set; }
         [Required]
@@ -21,5 +21,8 @@ namespace ProjetoIntegrador.Models
 
         [NotMapped]
         public bool Logado { get; set; }
+
+        [NotMapped]
+        public List<User> UserLogado { get; set; }
     }
 }

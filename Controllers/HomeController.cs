@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoIntegrador.ViewModels;
 using ProjetoIntegrador.Models;
 using ProjetoIntegrador.DataContext;
-using Microsoft.AspNetCore.Identity;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -16,16 +15,11 @@ namespace ProjetoIntegrador.Controllers
     {
         private readonly Data _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+
 
         public HomeController(Data context,
-                                  IWebHostEnvironment hostingEnvironment,
-                                  UserManager<IdentityUser> userManager,
-                                SignInManager<IdentityUser> signInManager)
+                                  IWebHostEnvironment hostingEnvironment)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
             _context = context;
             _environment = hostingEnvironment;
         }

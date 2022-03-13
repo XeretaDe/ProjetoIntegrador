@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,16 +21,10 @@ namespace ProjetoIntegrador.Controllers
 
         private readonly Data _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
 
         public ArticlesController(Data context,
-                                  IWebHostEnvironment hostingEnvironment,
-                                  UserManager<IdentityUser> userManager,
-                                SignInManager<IdentityUser> signInManager)
+                                  IWebHostEnvironment hostingEnvironment)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
             _context = context;
             _environment = hostingEnvironment;
         }
@@ -67,7 +60,7 @@ namespace ProjetoIntegrador.Controllers
         // GET: Articles/Create
         public IActionResult Create()
         {
-            if (signInManager.IsSignedIn(User))
+            if (_context.Users.Last().Logado)
             {
                 return View();
             }
@@ -147,7 +140,7 @@ namespace ProjetoIntegrador.Controllers
             {
                 return NotFound();
             }
-            if (signInManager.IsSignedIn(User))
+            if (_context.Users.Last().Logado)
             {
                 ArticleCreateViewModel model = new ArticleCreateViewModel();
                 model.DescriptionArticle = articles.Description;
@@ -250,7 +243,7 @@ namespace ProjetoIntegrador.Controllers
                 return NotFound();
             }
 
-            if (signInManager.IsSignedIn(User))
+            if (_context.Users.Last().Logado)
             {
                 return View(articles);
             }
@@ -267,7 +260,7 @@ namespace ProjetoIntegrador.Controllers
         {
             var articles = await _context.Artigos.FindAsync(id);
             _context.Artigos.Remove(articles);
-            if (signInManager.IsSignedIn(User))
+            if (_context.Users.Last().Logado)
             {
                 await _context.SaveChangesAsync();
                 return View(articles);

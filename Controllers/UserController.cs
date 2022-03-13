@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoIntegrador.DataContext;
 using ProjetoIntegrador.Models;
 using ProjetoIntegrador.ViewModels;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProjetoIntegrador.Controllers
@@ -13,24 +14,18 @@ namespace ProjetoIntegrador.Controllers
     public class UserController : Controller
     {
         private readonly Data _contexto;
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
 
-        public UserController(UserManager<IdentityUser> userManager,
-                                SignInManager<IdentityUser> signInManager,
-                                Data contexto)
+        public UserController(Data contexto)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            _contexto = contexto;
 
+            _contexto = contexto;
         }
 
         [Route("Register")]
         [HttpGet]
         public ActionResult Create()
         {
-            if (signInManager.IsSignedIn(User))
+            if (_contexto.Users.Last().Logado)
             {
                 return View();
             }
@@ -48,26 +43,15 @@ namespace ProjetoIntegrador.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var user = new User { Login = Usuario.Login, NomeUsuario = Usuario.Nome, Password = Usuario.Password };
+                var user = new User { Login = Usuario.Login, NomeUsuario = Usuario.Nome, Password = Usuario.Password };
 
-                //using (DbCommand cmd = _contexto.Database.GetDbConnection().CreateCommand())
-                //{
-                //    _contexto.Database.OpenConnection();
-                //    await _contexto.Users.AddAsync(user);
-                //    await _contexto.SaveChangesAsync();
-                //}
+                using (DbCommand cmd = _contexto.Database.GetDbConnection().CreateCommand())
+                {
+                    _contexto.Database.OpenConnection();
+                    await _contexto.Users.AddAsync(user);
+                    await _contexto.SaveChangesAsync();
+                }
 
-                var usuario = new IdentityUser { UserName = Usuario.Login, Email = Usuario.Nome };
-                var result = await userManager.CreateAsync(usuario, Usuario.Password);
-                if (result.Succeeded)
-                {
-                    await signInManager.SignInAsync(usuario, isPersistent: false);
-                    return RedirectToAction("index", "Home");
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
             }
             return View(User);
         }
@@ -79,35 +63,37 @@ namespace ProjetoIntegrador.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Login(LoginUser model)
+        public IActionResult Login(LoginUser model)
         {
             if (ModelState.IsValid)
             {
-                //using (DbCommand cmd = _contexto.Database.GetDbConnection().CreateCommand())
-                //{
-                //    cmd.CommandText = "SELECT * FROM users WHERE UserName = '" + model.Login + "'";
-                //    _contexto.Database.OpenConnection();
-                //    using (DbDataReader ddr = cmd.ExecuteReader())
-                //    {
-                //        while (ddr.Read())
-                //        {
-                //            if (model.Password == ddr.GetString("Password"))
-                //            {
-                //                User user = new User();
-                //                user.Logado = true;
-                //                user.Login = ddr.GetString("Login");
-                //                user.NomeUsuario = ddr.GetString("NomeUsuario");
-                //                user.Password = ddr.GetString("Password");
-                //                user.IdUser = ddr.GetInt32("IdUser");
-                //            }
+                bool Logged = false; 
+                using (DbCommand cmd = _contexto.Database.GetDbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM users WHERE Login = '" + model.Login + "'";
+                    _contexto.Database.OpenConnection();
+                    using (DbDataReader ddr = cmd.ExecuteReader())
+                    {
+                        while (ddr.Read())
+                        {
+                            if (model.Password == ddr.GetString("Password"))
+                            {
+                                Logged = true;
+                                User user = new User();
+                                user.Logado = true;
+                                user.Login = ddr.GetString("Login");
+                                user.NomeUsuario = ddr.GetString("NomeUsuario");
+                                user.Password = ddr.GetString("Password");
+                                user.IdUser = ddr.GetString("IdUser");
 
-                //        }
-                //    }
-                //}
-                var result = await signInManager.PasswordSignInAsync(
-                                   model.Login, model.Password, model.RememberMe, false);
+                                user.UserLogado = new List<User>();
+                                user.UserLogado.Add(user);
+                            }
 
-                if (result.Succeeded)
+                        }
+                    }
+                }
+                if (Logged)
                 {
                     return RedirectToAction("index", "Home");
                 }
@@ -119,15 +105,11 @@ namespace ProjetoIntegrador.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout(User usuario)
         {
-            await signInManager.SignOutAsync();
+            User user = new User();
+            user.UserLogado.Remove(usuario);
             return RedirectToAction("index", "Home");
         }
-        //public IActionResult Logout(User usuario)
-        //{
-        //    usuario.Logado = false;
-        //    return RedirectToAction("index", "Home");
-        //}
     }
 }

@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,16 +20,13 @@ namespace ProjetoIntegrador.Controllers
     {
         private readonly Data _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+
+
+
 
         public ReviewsController(Data context,
-                                  IWebHostEnvironment hostingEnvironment,
-                                  UserManager<IdentityUser> userManager,
-                                SignInManager<IdentityUser> signInManager)
+                                  IWebHostEnvironment hostingEnvironment)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
             _context = context;
             _environment = hostingEnvironment;
         }
@@ -66,7 +62,7 @@ namespace ProjetoIntegrador.Controllers
         // GET: Articles/Create
         public IActionResult Create()
         {
-            if (signInManager.IsSignedIn(User))
+            if (_context.Users.Last().Logado)
             {
                 return View();
             }
@@ -102,15 +98,15 @@ namespace ProjetoIntegrador.Controllers
             {
                 using (DbCommand cmd = _context.Database.GetDbConnection().CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, UserName, Email FROM aspnetusers WHERE UserName = '" + User.Identity.Name + "'";
+                    cmd.CommandText = "SELECT IdUser, NomeUsuario, Login FROM users WHERE NomeUsuario = '" + User.Identity.Name + "'";
                     _context.Database.OpenConnection();
                     using (DbDataReader ddr = cmd.ExecuteReader())
                     {
 
                         while (ddr.Read())
                         {
-                            reviews.Username = ddr.GetString("Email");
-                            reviews.FKUser = ddr.GetString("Id");
+                            reviews.Username = ddr.GetString("Login");
+                            reviews.FKUser = ddr.GetString("IdUser");
                         }
                     }
                     string uniqueFileName = null;
@@ -150,7 +146,7 @@ namespace ProjetoIntegrador.Controllers
             {
                 return NotFound();
             }
-            if (signInManager.IsSignedIn(User))
+            if (_context.Users.Last().Logado)
             {
                 ReviewCreateViewModel model = new ReviewCreateViewModel();
                 model.DescriptionReview = reviews.Description;
@@ -193,15 +189,15 @@ namespace ProjetoIntegrador.Controllers
                 {
                     using (DbCommand cmd = _context.Database.GetDbConnection().CreateCommand())
                     {
-                        cmd.CommandText = "SELECT Id, UserName, Email FROM aspnetusers WHERE UserName = '" + User.Identity.Name + "'";
+                        cmd.CommandText = "SELECT IdUser, NomeUsuario, Login FROM users WHERE UserName = '" + User.Identity.Name + "'";
                         _context.Database.OpenConnection();
                         using (DbDataReader ddr = cmd.ExecuteReader())
                         {
 
                             while (ddr.Read())
                             {
-                                reviews.Username = ddr.GetString("Email");
-                                reviews.FKUser = ddr.GetString("Id");
+                                reviews.Username = ddr.GetString("Login");
+                                reviews.FKUser = ddr.GetString("IdUser");
                             }
                         }
                         string uniqueFileName = null;
@@ -255,7 +251,7 @@ namespace ProjetoIntegrador.Controllers
                 return NotFound();
             }
 
-            if (signInManager.IsSignedIn(User))
+            if (_context.Users.Last().Logado)
             {
                 return View(reviews);
             }
@@ -272,7 +268,7 @@ namespace ProjetoIntegrador.Controllers
         {
             var reviews = await _context.Reviews.FindAsync(id);
             _context.Reviews.Remove(reviews);
-            if (signInManager.IsSignedIn(User))
+            if (_context.Users.Last().Logado)
             {
                 await _context.SaveChangesAsync();
                 return View(reviews);

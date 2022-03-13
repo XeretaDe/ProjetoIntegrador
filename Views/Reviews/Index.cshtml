@@ -1,15 +1,16 @@
 ﻿@model IEnumerable<Reviews>
-@inject SignInManager<IdentityUser> signInManager;
 @{
     ViewData["Title"] = "Index";
 }
 
 <div class="min-h-screen">
-    @if (signInManager.IsSignedIn(User))
-    {
-        <div class="bg-green-900 rounded-full p-2 w-28 mt-10 ml-6 hover:scale-110">
-            <a class="text-white font-inter font-bold" asp-action="Create">Create New</a>
-        </div>
+    @{User Usuario = new Models.User();
+        if (Usuario.UserLogado.Last().Logado)
+        {
+            <div class="bg-green-900 rounded-full p-2 w-28 mt-10 ml-6 hover:scale-110">
+                <a class="text-white font-inter font-bold" asp-action="Create">Create New</a>
+            </div>
+        }
 
     }
 
@@ -36,19 +37,21 @@
             </div>
 
 
-            @if (signInManager.IsSignedIn(User))
-            {
-                <div class="ml-6 flex gap-4">
-                    <div class="bg-slate-900 w-20 justify-center p-1 flex  rounded-full ">
-                        <a class="font-inter text-white font-medium" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+            @{User UsuarioLogin = new Models.User();
+                if (UsuarioLogin.UserLogado.Last().Logado)
+                {
+                    <div class="ml-6 flex gap-4">
+                        <div class="bg-slate-900 w-20 justify-center p-1 flex  rounded-full ">
+                            <a class="font-inter text-white font-medium" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        </div>
+                        <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full ">
+                            <a class="font-inter  font-medium text-white" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        </div>
+                        <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full ">
+                            <a class="font-inter text-white font-medium" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </div>
                     </div>
-                    <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full "><a
-                    class="font-inter  font-medium text-white" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    </div>
-                    <div class="bg-slate-900 w-20 justify-center p-1 flex rounded-full ">
-                        <a class="font-inter text-white font-medium" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </div>
-                </div>
+                }
             }
         </div>
     }
